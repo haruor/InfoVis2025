@@ -11,19 +11,14 @@
                  .attr("width", 500) // SVGの幅
                  .attr("height", 500); // SVGの高さ
 
-     d3.csv("./w04_task2.csv", function(data) {
-         // データを数値に変換
-         data.forEach(function(d) {
-             d.value = +d.value;
-         });
-
+     d3.csv("w04_task2.csv", function(data) {
          svg.selectAll("rect")
             .data(data)
             .enter()
             .append("rect")
             .attr("x", 100) // バーの開始位置（ラベルの右側）
             .attr("y", function(d, i) { return padding + i * (height + padding); }) // 縦位置
-            .attr("width", function(d) { return d.value; }) // データの値を幅に設定
+            .attr("width", function(d) { return +d.value; }) // データの値を幅に設定
             .attr("height", height)
             .attr("fill", "steelblue");
 
