@@ -20,7 +20,8 @@
             .attr("y", 50)
             .attr("width", function(d){ return d.width; })
             .attr("height", 20)
-            .attr("fill", "steelblue");
+            .attr("fill", "steelblue")
+            .attr("data-label", function(d){ return d.label; });
 
          // ラベルを追加
          svg.selectAll("text")
