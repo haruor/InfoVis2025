@@ -5,39 +5,36 @@
     <body>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script>
-     var padding = 10; // パディング
-     var height = 20; // バーの高さ
+     var padding = 10;
+     var height = 20;
      var svg = d3.select("body").append("svg")
-                 .attr("width", 500) // SVGの幅
-                 .attr("height", 500); // SVGの高さ
+                 .attr("width", 500)
+                 .attr("height", 500);
 
      d3.csv("w04_task2.csv", function(data) {
-         // データの値を数値に変換
          data.forEach(function(d) {
              d.value = +d.value;
          });
 
-         // バーを描画
          svg.selectAll("rect")
             .data(data)
             .enter()
             .append("rect")
-            .attr("x", 100) // バーの開始位置（ラベルの右側）
-            .attr("y", function(d, i) { return padding + i * (height + padding); }) // 縦位置
-            .attr("width", function(d) { return d.value; }) // データの値を幅に設定
+            .attr("x", 100)
+            .attr("y", function(d, i) { return padding + i * (height + padding); })
+            .attr("width", function(d) { return d.value; })
             .attr("height", height)
             .attr("fill", "steelblue");
 
-         // ラベルを描画
          svg.selectAll("text")
             .data(data)
             .enter()
             .append("text")
-            .attr("x", 100 - 30) // バーの左側に配置（バーに近づける）
-            .attr("y", function(d, i) { return padding + i * (height + padding) + height / 2 + 5; }) // バーの中央に配置
-            .text(function(d) { return d.label; }) // ラベルのテキスト
+            .attr("x", 100)
+            .attr("y", function(d, i) { return padding + i * (height + padding) + height / 2 + 5; })
+            .text(function(d) { return d.label; })
             .attr("font-size", "12px")
-            .attr("text-anchor", "end") // テキストを右揃え
+            .attr("text-anchor", "end")
             .attr("fill", "black");
      });
     </script>
