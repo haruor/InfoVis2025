@@ -22,7 +22,7 @@
             .data(data)
             .enter()
             .append("rect")
-            .attr("x", padding) // バーの開始位置
+            .attr("x", 100) // バーの開始位置（ラベルの右側）
             .attr("y", function(d, i) { return padding + i * (height + padding); }) // 縦位置
             .attr("width", function(d) { return d.value; }) // データの値を幅に設定
             .attr("height", height)
@@ -33,10 +33,11 @@
             .data(data)
             .enter()
             .append("text")
-            .attr("x", function(d) { return padding + d.value + 5; }) // バーの右隣に配置
+            .attr("x", 95) // バーの左側に配置
             .attr("y", function(d, i) { return padding + i * (height + padding) + height / 2 + 5; }) // バーの中央に配置
             .text(function(d) { return d.label; }) // ラベルのテキスト
             .attr("font-size", "12px")
+            .attr("text-anchor", "end") // テキストを右揃え
             .attr("fill", "black");
      });
     </script>
