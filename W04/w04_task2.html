@@ -12,27 +12,20 @@
                  .attr("height", 500); // SVGの高さ
 
      d3.csv("w04_task2.csv", function(data) {
+         // データの値を数値に変換
+         data.forEach(function(d) {
+             d.value = +d.value;
+         });
+
          svg.selectAll("rect")
             .data(data)
             .enter()
             .append("rect")
-            .attr("x", 100) // バーの開始位置（ラベルの右側）
+            .attr("x", padding) // バーの開始位置
             .attr("y", function(d, i) { return padding + i * (height + padding); }) // 縦位置
-            .attr("width", function(d) { return +d.value; }) // データの値を幅に設定
+            .attr("width", function(d) { return d.value; }) // データの値を幅に設定
             .attr("height", height)
             .attr("fill", "steelblue");
-
-         // ラベルを追加
-         svg.selectAll("text")
-            .data(data)
-            .enter()
-            .append("text")
-            .attr("x", 90) // バーの左側に配置
-            .attr("y", function(d, i) { return padding + i * (height + padding) + height / 2 + 5; }) // 縦位置をバーの中央に
-            .text(function(d) { return d.label; }) // ラベルのテキスト
-            .attr("font-size", "12px")
-            .attr("text-anchor", "end") // テキストを右揃え
-            .attr("fill", "black");
      });
     </script>
     </body>
