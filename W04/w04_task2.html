@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>W04: Task 1</title>
+    </head>
+    <body>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script>
+	 var svg = d3.select("body").append("svg");
+	 d3.csv("https://haruor.github.io/InfoVis2025/W04/w04_task2.csv", draw );
+	 function draw(data){
+	     svg.selectAll("rect")
+		.data(data)
+	        .enter()
+	        .append("rect")
+	        .attr("width", function(d){ return d.width; })
+            .attr("label", function(d){ return d.label; });
+	 };
+	</script>
+    </body>
+</html>
