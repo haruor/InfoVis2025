@@ -17,6 +17,7 @@
              d.value = +d.value;
          });
 
+         // バーを描画
          svg.selectAll("rect")
             .data(data)
             .enter()
@@ -26,6 +27,17 @@
             .attr("width", function(d) { return d.value; }) // データの値を幅に設定
             .attr("height", height)
             .attr("fill", "steelblue");
+
+         // ラベルを描画
+         svg.selectAll("text")
+            .data(data)
+            .enter()
+            .append("text")
+            .attr("x", function(d) { return padding + d.value + 5; }) // バーの右隣に配置
+            .attr("y", function(d, i) { return padding + i * (height + padding) + height / 2 + 5; }) // バーの中央に配置
+            .text(function(d) { return d.label; }) // ラベルのテキスト
+            .attr("font-size", "12px")
+            .attr("fill", "black");
      });
     </script>
     </body>
