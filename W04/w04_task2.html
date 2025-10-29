@@ -1,25 +1,25 @@
 <html>
     <head>
-        <title>W04: Task 1</title>
+        <title>W04: Task 2</title>
     </head>
     <body>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script>
+     var padding = 10; // パディング
+     var height = 20; // バーの高さ
      var svg = d3.select("body").append("svg")
-                 .attr("width", 500) // SVGの幅を設定
-                 .attr("height", 500); // SVGの高さを設定
+                 .attr("width", 500) // SVGの幅
+                 .attr("height", 500); // SVGの高さ
 
-     d3.csv("https://haruor.github.io/InfoVis2025/W04/w04_task2.csv", draw);
-
-     function draw(data) {
+     d3.csv("w04_task2.csv", function(data) {
          svg.selectAll("rect")
             .data(data)
             .enter()
             .append("rect")
-            .attr("x", function(d, i) { return i * 50; }) // 各バーの位置を設定
-            .attr("y", 50) // バーのY位置を設定
-            .attr("width", function(d) { return +d.width; }) // 数値として扱う
-            .attr("height", 20) // バーの高さを設定
+            .attr("x", 100) // バーの開始位置（ラベルの右側）
+            .attr("y", function(d, i) { return padding + i * (height + padding); }) // 縦位置
+            .attr("width", function(d) { return +d.value; }) // データの値を幅に設定
+            .attr("height", height)
             .attr("fill", "steelblue");
 
          // ラベルを追加
@@ -27,12 +27,13 @@
             .data(data)
             .enter()
             .append("text")
-            .attr("x", function(d, i) { return i * 50 + +d.width + 5; }) // バーの右隣
-            .attr("y", 65) // バーの中央に配置
+            .attr("x", 90) // バーの左側に配置
+            .attr("y", function(d, i) { return padding + i * (height + padding) + height / 2 + 5; }) // 縦位置をバーの中央に
             .text(function(d) { return d.label; }) // ラベルのテキスト
             .attr("font-size", "12px")
+            .attr("text-anchor", "end") // テキストを右揃え
             .attr("fill", "black");
-     };
+     });
     </script>
     </body>
 </html>
