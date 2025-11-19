@@ -2,11 +2,15 @@ d3.csv("https://haruor.github.io/InfoVis2025/W06/w06_task01.csv")
     .then( data => {
         data.forEach( d => { d.x = +d.x; d.y = +d.y; });
 
+        // XとYの最小値を取得してマージンに設定
+        const x_min_margin = d3.min(data, d => d.x);
+        const y_min_margin = d3.min(data, d => d.y);
+
         var config = {
             parent: '#drawing_region',
-            width: 256,
-            height: 256,
-            margin: {top:20, right:20, bottom:20, left:20} // マージンを20ずつ設定
+            width: 256 + x_min_margin * 2, // 左右に最小値分のマージンを追加
+            height: 256 + y_min_margin * 2, // 上下に最小値分のマージンを追加
+            margin: {top: y_min_margin, right: x_min_margin, bottom: y_min_margin, left: x_min_margin}
         };
 
         const scatter_plot = new ScatterPlot( config, data );
@@ -23,7 +27,7 @@ class ScatterPlot {
             parent: config.parent,
             width: config.width || 256,
             height: config.height || 256,
-            margin: config.margin || {top:20, right:20, bottom:20, left:20} // マージンを20ずつ設定
+            margin: config.margin || {top:0, right:0, bottom:0, left:0}
         }
         this.data = data;
         this.init();
@@ -64,7 +68,7 @@ class ScatterPlot {
     update() {
         let self = this;
 
-        // X軸とY軸の最小値を0に設定
+        // X軸とY軸の最小値を0に設定し、最大値を調整
         const xmin = 0;
         const xmax = d3.max( self.data, d => d.x );
         self.xscale.domain( [xmin, xmax] );
