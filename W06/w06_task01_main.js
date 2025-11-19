@@ -1,4 +1,4 @@
-d3.csv("https://haruor.github.io/InfoVis2025/W06/W06_task1.csv")
+d3.csv("https://haruor.github.io/InfoVis2025/W06/w06_task1.csv")
     .then( data => {
         data.forEach( d => { d.x = +d.x; d.y = +d.y; });
 
