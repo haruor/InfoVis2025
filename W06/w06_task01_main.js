@@ -6,7 +6,7 @@ d3.csv("https://haruor.github.io/InfoVis2025/W06/w06_task01.csv")
             parent: '#drawing_region',
             width: 256,
             height: 256,
-            margin: {top:10, right:10, bottom:20, left:10}
+            margin: {top:10, right:10, bottom:20, left:30} // 左に余白を追加
         };
 
         const scatter_plot = new ScatterPlot( config, data );
@@ -46,16 +46,15 @@ class ScatterPlot {
             .range( [0, self.inner_width] );
 
         self.yscale = d3.scaleLinear()
-            .range( [self.inner_height, 0] );
+            .range([self.inner_height, 0]); // 修正: Y軸を上に行くほど大きくする
 
         self.xaxis = d3.axisBottom( self.xscale )
             .ticks(6);
 
+        self.yaxis = d3.axisLeft(self.yscale).ticks(6);
+
         self.xaxis_group = self.chart.append('g')
             .attr('transform', `translate(0, ${self.inner_height})`);
-
-        self.yaxis = d3.axisLeft( self.yscale )
-            .ticks(6);
 
         self.yaxis_group = self.chart.append('g')
             .attr('transform', `translate(0, 0)`);
@@ -89,7 +88,6 @@ class ScatterPlot {
         self.xaxis_group
             .call( self.xaxis );
 
-        self.yaxis_group
-            .call( self.yaxis );
+        self.yaxis_group.call(self.yaxis);
     }
 }
