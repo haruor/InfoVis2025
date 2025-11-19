@@ -10,7 +10,7 @@ d3.csv("https://haruor.github.io/InfoVis2025/W06/w06_task01.csv")
             parent: '#drawing_region',
             width: 256 + x_min_margin * 2, // 左右に最小値分のマージンを追加
             height: 256 + y_min_margin * 2, // 上下に最小値分のマージンを追加
-            margin: {top: y_min_margin, right: x_min_margin, bottom: y_min_margin, left: x_min_margin}
+            margin: {top: y_min_margin, right: x_min_margin, bottom: y_min_margin, left: 50}
         };
 
         const scatter_plot = new ScatterPlot( config, data );
@@ -68,14 +68,15 @@ class ScatterPlot {
     update() {
         let self = this;
 
-        // X軸とY軸の最小値と最大値をマージンで拡張
+        // X軸とY軸の最小値と最大値を取得
         const xmin = 0;
-        const xmax = d3.max( self.data, d => d.x ) + self.config.margin.right; // 右側にマージンを追加
-        self.xscale.domain( [xmin - self.config.margin.left, xmax] ); // 左側にもマージンを追加
-
+        const xmax = d3.max(self.data, d => d.x);
         const ymin = 0;
-        const ymax = d3.max( self.data, d => d.y ) + self.config.margin.top; // 上側にマージンを追加
-        self.yscale.domain( [ymin - self.config.margin.bottom, ymax] ); // 下側にもマージンを追加
+        const ymax = d3.max(self.data, d => d.y);
+
+        // ドメインをマージン分だけ拡張
+        self.xscale.domain([xmin, xmax + self.config.margin.right / self.inner_width * (xmax - xmin)]);
+        self.yscale.domain([ymin, ymax + self.config.margin.top / self.inner_height * (ymax - ymin)]);
 
         self.render();
     }
