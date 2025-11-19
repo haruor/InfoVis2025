@@ -68,14 +68,14 @@ class ScatterPlot {
     update() {
         let self = this;
 
-        // X軸とY軸の最小値を0に設定し、最大値を調整
+        // X軸とY軸の最小値と最大値をマージンで拡張
         const xmin = 0;
-        const xmax = d3.max( self.data, d => d.x );
-        self.xscale.domain( [xmin, xmax] );
+        const xmax = d3.max( self.data, d => d.x ) + self.config.margin.right; // 右側にマージンを追加
+        self.xscale.domain( [xmin - self.config.margin.left, xmax] ); // 左側にもマージンを追加
 
         const ymin = 0;
-        const ymax = d3.max( self.data, d => d.y );
-        self.yscale.domain( [ymin, ymax] );
+        const ymax = d3.max( self.data, d => d.y ) + self.config.margin.top; // 上側にマージンを追加
+        self.yscale.domain( [ymin - self.config.margin.bottom, ymax] ); // 下側にもマージンを追加
 
         self.render();
     }
