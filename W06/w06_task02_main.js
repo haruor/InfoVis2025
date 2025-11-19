@@ -64,28 +64,28 @@ class ScatterPlot {
         self.yaxis_group = self.chart.append('g')
             .attr('transform', `translate(0, 0)`);
 
-        // 図のタイトルを追加（図の中心に配置）
+        // 図のタイトルを追加（5文字分右にずらす）
         self.svg.append("text")
-            .attr("x", self.config.width / 2)
+            .attr("x", self.config.width / 2 + 50) // 50px右にずらす
             .attr("y", self.config.margin.top / 2)
             .attr("text-anchor", "middle")
             .style("font-size", "16px")
             .style("font-weight", "bold")
             .text("Base stats");
 
-        // X軸ラベルを追加（図の中心に配置）
+        // X軸ラベルを追加（5文字分右にずらす）
         self.svg.append("text")
-            .attr("x", self.config.width / 2)
-            .attr("y", self.config.height - self.config.margin.bottom / 2)
+            .attr("x", self.config.width / 2 + 50) // 50px右にずらす
+            .attr("y", self.config.height - 10)
             .attr("text-anchor", "middle")
             .style("font-size", "12px")
             .text("Atk");
 
-        // Y軸ラベルを追加（図の中心に配置）
+        // Y軸ラベルを追加（そのまま）
         self.svg.append("text")
             .attr("transform", "rotate(-90)")
             .attr("x", -self.config.height / 2)
-            .attr("y", self.config.margin.left / 2)
+            .attr("y", 15)
             .attr("text-anchor", "middle")
             .style("font-size", "12px")
             .text("SpA");
