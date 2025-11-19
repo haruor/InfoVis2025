@@ -6,7 +6,7 @@ d3.csv("https://haruor.github.io/InfoVis2025/W06/w06_task01.csv")
             parent: '#drawing_region',
             width: 256,
             height: 256,
-            margin: {top:10, right:10, bottom:20, left:30} // 左に余白を追加
+            margin: {top:20, right:20, bottom:20, left:20} // マージンを20ずつ設定
         };
 
         const scatter_plot = new ScatterPlot( config, data );
@@ -23,7 +23,7 @@ class ScatterPlot {
             parent: config.parent,
             width: config.width || 256,
             height: config.height || 256,
-            margin: config.margin || {top:10, right:10, bottom:10, left:10}
+            margin: config.margin || {top:20, right:20, bottom:20, left:20} // マージンを20ずつ設定
         }
         this.data = data;
         this.init();
@@ -46,12 +46,13 @@ class ScatterPlot {
             .range( [0, self.inner_width] );
 
         self.yscale = d3.scaleLinear()
-            .range([self.inner_height, 0]); // 修正: Y軸を上に行くほど大きくする
+            .range( [self.inner_height, 0] ); // Y軸を上に行くほど大きくする
 
         self.xaxis = d3.axisBottom( self.xscale )
             .ticks(6);
 
-        self.yaxis = d3.axisLeft(self.yscale).ticks(6);
+        self.yaxis = d3.axisLeft( self.yscale )
+            .ticks(6);
 
         self.xaxis_group = self.chart.append('g')
             .attr('transform', `translate(0, ${self.inner_height})`);
@@ -63,11 +64,12 @@ class ScatterPlot {
     update() {
         let self = this;
 
-        const xmin = d3.min( self.data, d => d.x );
+        // X軸とY軸の最小値を0に設定
+        const xmin = 0;
         const xmax = d3.max( self.data, d => d.x );
         self.xscale.domain( [xmin, xmax] );
 
-        const ymin = d3.min( self.data, d => d.y );
+        const ymin = 0;
         const ymax = d3.max( self.data, d => d.y );
         self.yscale.domain( [ymin, ymax] );
 
@@ -83,11 +85,13 @@ class ScatterPlot {
             .append("circle")
             .attr("cx", d => self.xscale( d.x ) )
             .attr("cy", d => self.yscale( d.y ) )
-            .attr("r", d => d.r );
+            .attr("r", d => d.r )
+            .attr("fill", d => d.color); // 色を設定
 
         self.xaxis_group
             .call( self.xaxis );
 
-        self.yaxis_group.call(self.yaxis);
+        self.yaxis_group
+            .call( self.yaxis );
     }
 }
