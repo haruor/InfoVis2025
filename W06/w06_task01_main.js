@@ -1,4 +1,4 @@
-d3.csv("https://haruor.github.io/InfoVis2025/W06/w06_task1.csv")
+d3.csv("https://haruor.github.io/InfoVis2025/W06/w06_task01.csv")
     .then( data => {
         data.forEach( d => { d.x = +d.x; d.y = +d.y; });
 
@@ -53,6 +53,12 @@ class ScatterPlot {
 
         self.xaxis_group = self.chart.append('g')
             .attr('transform', `translate(0, ${self.inner_height})`);
+
+        self.yaxis = d3.axisBottom( self.yscale )
+            .ticks(6);
+
+        self.yaxis_group = self.chart.append('g')
+            .attr('transform', `translate(0, ${self.inner_width})`);
     }
 
     update() {
