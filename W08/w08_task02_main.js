@@ -53,12 +53,35 @@ class LineChart {
             .x(d => this.xscale(d.x))
             .y(d => this.yscale(d.y));
 
+        // 折れ線グラフの領域を塗るためのエリア生成
+        const area = d3.area()
+            .x(d => this.xscale(d.x))
+            .y1(d => this.yscale(d.y))
+            .y0(this.inner_height); // x軸に接するように設定
+
+        // 領域を描画
+        this.chart.append('path')
+            .datum(this.data)
+            .attr('d', area)
+            .attr('fill', 'lightred') // 領域の色
+            .attr('opacity', 0.5);
+
         // 折れ線を描画
         this.chart.append('path')
             .datum(this.data)
             .attr('d', line)
-            .attr('stroke', 'black')
-            .attr('fill', 'none');
+            .attr('stroke', 'red') // 折れ線の色（濃い色）
+            .attr('fill', 'none')
+            .attr('stroke-width', 2);
+
+        // 点を描画
+        this.chart.selectAll('circle')
+            .data(this.data)
+            .join('circle')
+            .attr('cx', d => this.xscale(d.x))
+            .attr('cy', d => this.yscale(d.y))
+            .attr('r', 4) // 点の半径
+            .attr('fill', 'red'); // 点の色（折れ線と同じ濃い色）
 
         // 軸を描画
         this.xaxis_group.call(this.xaxis);
