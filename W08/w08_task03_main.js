@@ -21,57 +21,57 @@ class PieChart {
             .append('g')
             .attr('transform', `translate(${width / 2}, ${height / 2})`);
 
-        // パイチャートの設定
+        // Set up the pie chart
         this.pie = d3.pie()
             .value(d => d.value);
 
-        // ドーナツ状の円弧の設定
+        // Set up the arc for the donut chart
         this.arc = d3.arc()
-            .innerRadius(this.radius / 2) // 内側の半径（ドーナツの中心部分）
-            .outerRadius(this.radius); // 外側の半径
+            .innerRadius(this.radius / 2) // Inner radius (for the donut hole)
+            .outerRadius(this.radius); // Outer radius
 
-        // ラベルの位置を計算するための円弧
+        // Set up the arc for label positioning
         this.labelArc = d3.arc()
-            .innerRadius((this.radius * 3) / 4) // ラベルの位置を調整
+            .innerRadius((this.radius * 3) / 4) // Adjust label position
             .outerRadius((this.radius * 3) / 4);
     }
 
     update() {
-        // データを更新する場合に必要な処理を記述
+        // Update the data for the pie chart
         this.pie_data = this.pie(this.data);
     }
 
     render() {
-        // カラースケールを設定
+        // Set up the color scale
         const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-        // 円グラフを描画
+        // Draw the pie chart
         this.svg.selectAll('path')
             .data(this.pie_data)
             .join('path')
             .attr('d', this.arc)
-            .attr('fill', (d, i) => color(i)) // 各セグメントに異なる色を適用
+            .attr('fill', (d, i) => color(i)) // Apply different colors to each segment
             .attr('stroke', 'white')
             .style('stroke-width', '2px');
 
-        // ラベルを描画
+        // Draw the labels
         this.svg.selectAll('text')
             .data(this.pie_data)
             .join('text')
-            .attr('transform', d => `translate(${this.labelArc.centroid(d)})`) // ラベルの位置を計算
+            .attr('transform', d => `translate(${this.labelArc.centroid(d)})`) // Calculate label position
             .attr('text-anchor', 'middle')
             .attr('alignment-baseline', 'middle')
-            .text(d => d.data.label) // ラベルのテキスト
-            .attr('fill', 'black') // ラベルの色を黒に設定
+            .text(d => d.data.label) // Set the label text
+            .attr('fill', 'black') // Set the label color to black
             .attr('font-size', '12px');
     }
 }
 
-// 外部CSVファイルからデータを読み込む
+// Load data from an external CSV file
 d3.csv("w08_task03.csv").then(data => {
-    // データを数値に変換
+    // Convert data to numbers
     data.forEach(d => {
-        d.value = +d.value; // 数値に変換
+        d.value = +d.value; // Convert to numeric values
     });
 
     const config = {

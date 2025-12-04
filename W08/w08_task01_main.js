@@ -47,7 +47,7 @@ class BarChart {
     }
 
     update() {
-        // Update scales
+        // Update scales based on the data
         this.xscale.domain([0, d3.max(this.data, d => d.value)]);
         this.yscale.domain(this.data.map(d => d.label));
 
@@ -68,11 +68,11 @@ class BarChart {
     }
 }
 
-// データを外部CSVファイルから読み込む
+// Import data from an external CSV file
 d3.csv("w08_task01.csv").then(data => {
-    // データを数値に変換
+    // Convert data to numbers
     data.forEach(d => {
-        d.value = +d.value; // 数値に変換
+        d.value = +d.value; // Convert value to a number
     });
 
     const config = {
