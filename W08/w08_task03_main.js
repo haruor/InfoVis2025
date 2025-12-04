@@ -29,6 +29,11 @@ class PieChart {
         this.arc = d3.arc()
             .innerRadius(0)
             .outerRadius(this.radius);
+
+        // ラベルの位置を計算するための円弧
+        this.labelArc = d3.arc()
+            .innerRadius(this.radius / 2) // 内側の半径
+            .outerRadius(this.radius / 2); // 外側の半径
     }
 
     update() {
@@ -38,13 +43,24 @@ class PieChart {
 
     render() {
         // 円グラフを描画
-        this.svg.selectAll('path')
+        const arcs = this.svg.selectAll('path')
             .data(this.pie_data)
             .join('path')
             .attr('d', this.arc)
-            .attr('fill', (d, i) => d3.schemeCategory10[i % 10]) // カラースケール
+            .attr('fill', 'black') // カラースケールを黒に統一
             .attr('stroke', 'white')
             .style('stroke-width', '2px');
+
+        // ラベルを描画
+        this.svg.selectAll('text')
+            .data(this.pie_data)
+            .join('text')
+            .attr('transform', d => `translate(${this.labelArc.centroid(d)})`) // ラベルの位置を計算
+            .attr('text-anchor', 'middle')
+            .attr('alignment-baseline', 'middle')
+            .text(d => d.data.label) // ラベルのテキスト
+            .attr('fill', 'white') // ラベルの色を白に設定
+            .attr('font-size', '12px');
     }
 }
 
