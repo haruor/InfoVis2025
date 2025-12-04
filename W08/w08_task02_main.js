@@ -63,14 +63,14 @@ class LineChart {
         this.chart.append('path')
             .datum(this.data)
             .attr('d', area)
-            .attr('fill', 'lightred') // 領域の色
+            .attr('fill', 'lightblue') // 領域の色
             .attr('opacity', 0.5);
 
         // 折れ線を描画
         this.chart.append('path')
             .datum(this.data)
             .attr('d', line)
-            .attr('stroke', 'red') // 折れ線の色（濃い色）
+            .attr('stroke', 'blue') // 折れ線の色（濃い色）
             .attr('fill', 'none')
             .attr('stroke-width', 2);
 
@@ -81,7 +81,7 @@ class LineChart {
             .attr('cx', d => this.xscale(d.x))
             .attr('cy', d => this.yscale(d.y))
             .attr('r', 4) // 点の半径
-            .attr('fill', 'red'); // 点の色（折れ線と同じ濃い色）
+            .attr('fill', 'blue'); // 点の色（折れ線と同じ濃い色）
 
         // 軸を描画
         this.xaxis_group.call(this.xaxis);
