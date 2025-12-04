@@ -25,15 +25,15 @@ class PieChart {
         this.pie = d3.pie()
             .value(d => d.value);
 
-        // 円弧の設定
+        // ドーナツ状の円弧の設定
         this.arc = d3.arc()
-            .innerRadius(0)
-            .outerRadius(this.radius);
+            .innerRadius(this.radius / 2) // 内側の半径（ドーナツの中心部分）
+            .outerRadius(this.radius); // 外側の半径
 
         // ラベルの位置を計算するための円弧
         this.labelArc = d3.arc()
-            .innerRadius(this.radius / 2) // 内側の半径
-            .outerRadius(this.radius / 2); // 外側の半径
+            .innerRadius((this.radius * 3) / 4) // ラベルの位置を調整
+            .outerRadius((this.radius * 3) / 4);
     }
 
     update() {
@@ -42,12 +42,15 @@ class PieChart {
     }
 
     render() {
+        // カラースケールを設定
+        const color = d3.scaleOrdinal(d3.schemeCategory10);
+
         // 円グラフを描画
-        const arcs = this.svg.selectAll('path')
+        this.svg.selectAll('path')
             .data(this.pie_data)
             .join('path')
             .attr('d', this.arc)
-            .attr('fill', 'black') // カラースケールを黒に統一
+            .attr('fill', (d, i) => color(i)) // 各セグメントに異なる色を適用
             .attr('stroke', 'white')
             .style('stroke-width', '2px');
 
@@ -59,7 +62,7 @@ class PieChart {
             .attr('text-anchor', 'middle')
             .attr('alignment-baseline', 'middle')
             .text(d => d.data.label) // ラベルのテキスト
-            .attr('fill', 'white') // ラベルの色を白に設定
+            .attr('fill', 'black') // ラベルの色を黒に設定
             .attr('font-size', '12px');
     }
 }
