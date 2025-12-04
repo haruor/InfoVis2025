@@ -68,22 +68,21 @@ class BarChart {
     }
 }
 
-// データと設定を渡してクラスを使用
-const data = [
-    {label:'Apple', value:100},
-    {label:'Banana', value:200},
-    {label:'Cookie', value:50},
-    {label:'Doughnut', value:120},
-    {label:'Egg', value:80}
-];
+// データを外部CSVファイルから読み込む
+d3.csv("w08_task01.csv").then(data => {
+    // データを数値に変換
+    data.forEach(d => {
+        d.value = +d.value; // 数値に変換
+    });
 
-const config = {
-    parent: '#drawing_region',
-    width: 256,
-    height: 128,
-    margin: {top: 10, right: 10, bottom: 20, left: 60}
-};
+    const config = {
+        parent: '#drawing_region',
+        width: 256,
+        height: 128,
+        margin: {top: 10, right: 10, bottom: 20, left: 60}
+    };
 
-const barChart = new BarChart(config, data);
-barChart.update();
-barChart.render();
+    const barChart = new BarChart(config, data);
+    barChart.update();
+    barChart.render();
+});
