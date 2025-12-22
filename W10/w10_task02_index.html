@@ -1,12 +1,12 @@
 <html>
     <head>
         <title>W10: Task 02</title>
-	<style>
-	 body {
-	     font-family: system-ui;
-	 }
+    <style>
+     body {
+         font-family: system-ui;
+     }
 
-    /* tooltip 基本 */
+    /* tooltip 基本（角丸の四角に変更、矢印は削除） */
     #tooltip {
       position: absolute;
       pointer-events: none;
@@ -15,11 +15,11 @@
       transition: opacity 120ms ease, transform 120ms ease;
       background: #222;
       color: #fff;
-      border-radius: 6px;
-      padding: 6px 10px;
+      border-radius: 8px; /* 角丸 */
+      padding: 8px 12px;  /* 少し余裕を増やす */
       font-size: 12px;
       line-height: 1.2;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
       z-index: 10000;
       white-space: nowrap;
     }
@@ -39,26 +39,13 @@
       margin-bottom: 4px;
     }
 
-    /* 矢印（下向き）*/
-    #tooltip::after {
-      content: "";
-      position: absolute;
-      left: 12px;
-      top: 100%;
-      width: 0;
-      height: 0;
-      border-left: 6px solid transparent;
-      border-right: 6px solid transparent;
-      border-top: 6px solid #222;
-      pointer-events: none;
-      transform: translateY(-1px);
-    }
-	</style>
+    /* 矢印を使わないので ::after は削除 */
+    </style>
     </head>
     <body>
-	<div id="tooltip"></div>
-	<svg id="drawing_region" width="256" height="256"></svg>
-	<script src="https://d3js.org/d3.v6.min.js"></script>
-	<script src="w10_task02_main.js"></script>
+    <div id="tooltip"></div>
+    <svg id="drawing_region" width="256" height="256"></svg>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="w10_task02_main.js"></script>
     </body>
 </html>
