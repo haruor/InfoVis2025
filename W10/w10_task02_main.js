@@ -1,35 +1,49 @@
-var data = [
-    {x:20,y:20,r:10},
-    {x:100,y:50,r:10},
-    {x:70,y:80,r:10},
-    {x:170,y:30,r:10},
-    {x:150,y:70,r:10}];
-
 var svg = d3.select('#drawing_region');
 
-let circles = svg.selectAll('circle')
-    .data(data)
-    .enter()
-    .append('circle');
+var data = []; // CSV 読み込み後に設定
 
-circles
-    .attr('cx', d => d.x)
-    .attr('cy', d => d.y)
-    .attr('r', d => d.r);
+// CSV を読み込み、数値に変換して r は既定値 10 を設定
+d3.csv('w10_task02.csv', d => ({ x: +d.x, y: +d.y, r: 10 }))
+  .then(rows => {
+    data = rows; // [{x,y,r}, ...]
+    render();
+  })
+  .catch(err => console.error('CSV読み込みエラー:', err));
 
-circles
-    .on('mouseover', (e,d) => {
-        d3.select('#tooltip')
-            .style('opacity', 1)
-            .html(`<div class="tooltip-label">Position</div>(${d.x}, ${d.y})`);
-    })
-    .on('mousemove', (e) => {
-        const padding = 10;
-        d3.select('#tooltip')
-            .style('left', (e.pageX + padding) + 'px')
-            .style('top', (e.pageY + padding) + 'px');
-    })
-    .on('mouseleave', () => {
-        d3.select('#tooltip')
-            .style('opacity', 0);
-    });
+function render() {
+    // データバインド（簡潔に join を使用）
+    let circles = svg.selectAll('circle')
+        .data(data, (d,i) => `${d.x}-${d.y}`);
+
+    circles.join(
+        enter => enter.append('circle')
+                      .attr('cx', d => d.x)
+                      .attr('cy', d => d.y)
+                      .attr('r', d => d.r)
+                      .call(sel => attachTooltipEvents(sel)),
+        update => update
+                      .attr('cx', d => d.x)
+                      .attr('cy', d => d.y)
+                      .attr('r', d => d.r),
+        exit => exit.remove()
+    );
+}
+
+function attachTooltipEvents(selection) {
+    selection
+        .on('mouseover', (e,d) => {
+            d3.select('#tooltip')
+                .style('opacity', 1)
+                .html(`<div class="tooltip-label">Position</div>(${d.x}, ${d.y})`);
+        })
+        .on('mousemove', (e) => {
+            const padding = 10;
+            d3.select('#tooltip')
+                .style('left', (e.pageX + padding) + 'px')
+                .style('top', (e.pageY + padding) + 'px');
+        })
+        .on('mouseleave', () => {
+            d3.select('#tooltip')
+                .style('opacity', 0);
+        });
+}
