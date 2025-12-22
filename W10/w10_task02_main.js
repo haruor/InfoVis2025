@@ -2,31 +2,35 @@ var svg = d3.select('#drawing_region');
 
 var data = []; // CSV 読み込み後に設定
 
-// CSV を読み込み、数値に変換して r は既定値 10 を設定
-d3.csv('w10_task02.csv', d => ({ x: +d.x, y: +d.y, r: 10 }))
+// CSV を読み込み、数値化して r を既定値 10 に設定、color も読み込む
+d3.csv('w10_task02.csv', d => ({ x: +d.x, y: +d.y, r: 10, color: d.color }))
   .then(rows => {
-    data = rows; // [{x,y,r}, ...]
+    data = rows; // [{x,y,r,color}, ...]
     render();
   })
   .catch(err => console.error('CSV読み込みエラー:', err));
 
 function render() {
-    // データバインド（簡潔に join を使用）
-    let circles = svg.selectAll('circle')
-        .data(data, (d,i) => `${d.x}-${d.y}`);
+    // データバインド（key は座標の組み合わせ）
+    let sel = svg.selectAll('circle')
+        .data(data, d => `${d.x}-${d.y}`);
 
-    circles.join(
+    sel.join(
         enter => enter.append('circle')
                       .attr('cx', d => d.x)
                       .attr('cy', d => d.y)
                       .attr('r', d => d.r)
-                      .call(sel => attachTooltipEvents(sel)),
+                      .attr('fill', d => d.color || 'steelblue'),
         update => update
                       .attr('cx', d => d.x)
                       .attr('cy', d => d.y)
-                      .attr('r', d => d.r),
+                      .attr('r', d => d.r)
+                      .attr('fill', d => d.color || 'steelblue'),
         exit => exit.remove()
     );
+
+    // すべての円にツールチップイベントを付与
+    svg.selectAll('circle').call(attachTooltipEvents);
 }
 
 function attachTooltipEvents(selection) {
