@@ -2,8 +2,8 @@ var svg = d3.select('#drawing_region');
 
 var data = []; // CSV 読み込み後に設定
 
-// CSV を読み込み、数値化して r を既定値 10 に設定、color も読み込む
-d3.csv('w10_task02.csv', d => ({ x: +d.x, y: +d.y, r: 10, color: d.color }))
+// CSV を読み込み、数値化して r を既定値 10 に設定、color は指定がなければ 'black'
+d3.csv('w10_task02.csv', d => ({ x: +d.x, y: +d.y, r: 10, color: d.color || 'black' }))
   .then(rows => {
     data = rows; // [{x,y,r,color}, ...]
     render();
@@ -20,16 +20,16 @@ function render() {
                       .attr('cx', d => d.x)
                       .attr('cy', d => d.y)
                       .attr('r', d => d.r)
-                      .attr('fill', d => d.color || 'steelblue'),
+                      .attr('fill', d => d.color || 'black'),
         update => update
                       .attr('cx', d => d.x)
                       .attr('cy', d => d.y)
                       .attr('r', d => d.r)
-                      .attr('fill', d => d.color || 'steelblue'),
+                      .attr('fill', d => d.color || 'black'),
         exit => exit.remove()
     );
 
-    // すべての円にツールチップイベントを付与
+    // すべての円にツールチップ・クリックイベントを付与
     svg.selectAll('circle').call(attachTooltipEvents);
 }
 
@@ -39,7 +39,6 @@ function attachTooltipEvents(selection) {
             const tip = d3.select('#tooltip');
             tip.html(`<div class="tooltip-label">Position</div>(${d.x}, ${d.y})`)
                .classed('visible', true);
-            // 初回位置更新（mousemove でも更新されるので必須ではない）
             positionTooltip(e, tip.node());
         })
         .on('mousemove', (e,d) => {
@@ -47,8 +46,12 @@ function attachTooltipEvents(selection) {
             positionTooltip(e, tip.node());
         })
         .on('mouseleave', () => {
-            d3.select('#tooltip')
-              .classed('visible', false);
+            d3.select('#tooltip').classed('visible', false);
+        })
+        .on('click', (e,d) => {
+            // クリックで色をトグル（黒 <-> 赤）
+            d.color = (d.color === 'red') ? 'black' : 'red';
+            d3.select(e.currentTarget).attr('fill', d.color);
         });
 }
 
