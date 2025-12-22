@@ -36,18 +36,40 @@ function render() {
 function attachTooltipEvents(selection) {
     selection
         .on('mouseover', (e,d) => {
-            d3.select('#tooltip')
-                .style('opacity', 1)
-                .html(`<div class="tooltip-label">Position</div>(${d.x}, ${d.y})`);
+            const tip = d3.select('#tooltip');
+            tip.html(`<div class="tooltip-label">Position</div>(${d.x}, ${d.y})`)
+               .classed('visible', true);
+            // 初回位置更新（mousemove でも更新されるので必須ではない）
+            positionTooltip(e, tip.node());
         })
-        .on('mousemove', (e) => {
-            const padding = 10;
-            d3.select('#tooltip')
-                .style('left', (e.pageX + padding) + 'px')
-                .style('top', (e.pageY + padding) + 'px');
+        .on('mousemove', (e,d) => {
+            const tip = d3.select('#tooltip');
+            positionTooltip(e, tip.node());
         })
         .on('mouseleave', () => {
             d3.select('#tooltip')
-                .style('opacity', 0);
+              .classed('visible', false);
         });
+}
+
+// 左上に収めるなどオーバーフロー対策を行う補助関数
+function positionTooltip(event, tipNode) {
+    if (!tipNode) return;
+    const padding = 10;
+    const tooltipRect = tipNode.getBoundingClientRect();
+    let left = event.pageX + 12;
+    let top = event.pageY + 12;
+
+    // 右端に収める
+    const maxLeft = window.pageXOffset + window.innerWidth - tooltipRect.width - padding;
+    if (left > maxLeft) left = Math.max(window.pageXOffset + padding, maxLeft);
+
+    // 下端に収める（ツールチップが画面下に出る場合は上に表示）
+    const maxTop = window.pageYOffset + window.innerHeight - tooltipRect.height - padding;
+    if (top > maxTop) top = event.pageY - tooltipRect.height - 12;
+    if (top < window.pageYOffset + padding) top = window.pageYOffset + padding;
+
+    d3.select(tipNode)
+      .style('left', left + 'px')
+      .style('top', top + 'px');
 }

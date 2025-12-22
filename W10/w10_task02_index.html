@@ -5,20 +5,54 @@
 	 body {
 	     font-family: system-ui;
 	 }
-	 #tooltip {
-	     position: absolute;
-	     opacity: 0;
-	     background: #fff;
-	     border: 1px solid #ddd;
-	     font-size: 12px;
-	     font-weight: 600;
-	     padding: 2px 8px;
-	 }
-	 .tooltip-label {
-	     font-weight: 500;
-	     font-size: 11px;
-	     color: #888;
-	 }
+
+    /* tooltip 基本 */
+    #tooltip {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 120ms ease, transform 120ms ease;
+      background: #222;
+      color: #fff;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      line-height: 1.2;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 10000;
+      white-space: nowrap;
+    }
+
+    /* 表示用クラス（JS はこのクラスを付け外しする） */
+    #tooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 小見出し */
+    #tooltip .tooltip-label {
+      display: block;
+      font-weight: 700;
+      font-size: 11px;
+      color: #ddd;
+      margin-bottom: 4px;
+    }
+
+    /* 矢印（下向き）*/
+    #tooltip::after {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: 100%;
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid #222;
+      pointer-events: none;
+      transform: translateY(-1px);
+    }
 	</style>
     </head>
     <body>
