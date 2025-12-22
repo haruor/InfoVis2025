@@ -27,3 +27,17 @@ d3.select('#reverse')
         data.reverse();
         update(data);
     });
+
+// Descend: 値の降順でソート
+d3.select('#descend')
+    .on('click', () => {
+        data.sort((a,b) => b - a);
+        update(data);
+    });
+
+// Ascend: 値の昇順でソート
+d3.select('#ascend')
+    .on('click', () => {
+        data.sort((a,b) => a - b);
+        update(data);
+    });
