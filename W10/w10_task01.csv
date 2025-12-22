@@ -1,6 +1,6 @@
-value,label
-20,HP
-100,Atk
-70,Def
-170,SpA
-150,SpD
+value,label,color
+20,HP,green
+100,Atk,red
+70,Def,blue
+170,SpA,red
+150,SpD,blue
