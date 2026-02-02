@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Exoplanets by Spectral Type</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>Exoplanets: Radius vs. Equilibrium Temperature (F/G/K/M)</h1>
+
+  <div class="controls">
+    <button id="reverse">Reverse</button>
+    <button id="fetch-latest">Fetch Latest (TAP)</button>
+    <label><input type="checkbox" id="show-other"> Show Other</label>
+  </div>
+
+  <div class="container">
+    <div><svg id="drawing_region_scatterplot"></svg></div>
+    <div><svg id="drawing_region_barchart"></svg></div>
+  </div>
+
+  <div id="tooltip"></div>
+
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="js/ScatterPlot.js"></script>
+  <script src="js/BarChart.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

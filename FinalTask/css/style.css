@@ -1,0 +1,14 @@
+.container { display: flex; gap: 16px; }
+.controls { margin: 12px 0; display: flex; gap: 12px; align-items: center; }
+
+#tooltip {
+  position: absolute;
+  opacity: 0;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  pointer-events: none;
+}
+.bar.active { stroke: black; stroke-width: 2px; }
