@@ -1,11 +1,12 @@
 // main.js
 let input_data = [];
+let raw_rows = 0; // total rows from CSV/TAP before numeric filtering
 let scatter_plot = null;
 let bar_chart = null;
 
-// linked views state (W12 pattern)
-window.filter = [];     // selected spectral classes e.g., ['G','M']
-window.Filter = Filter; // make callable from BarChart
+// linked views state
+window.filter = [];
+window.Filter = Filter;
 
 function toSpecClass(st_spectype) {
   if (!st_spectype) return "Other";
@@ -18,6 +19,31 @@ function toSpecClass(st_spectype) {
 function showOtherEnabled() {
   const el = document.getElementById("show-other");
   return el ? el.checked : false;
+}
+
+// update on-screen note
+function updateDataNote() {
+  const note = document.getElementById("data-note");
+  if (!note) return;
+
+  const total = raw_rows;
+  const valid = input_data.length;
+  const dropped = Math.max(0, total - valid);
+
+  const otherCount = input_data.filter(d => d.spec_class === "Other").length;
+  const showOther = showOtherEnabled();
+
+  const active = window.filter || [];
+  const shown = scatter_plot?.data?.length ?? valid;
+
+  const filterText =
+    active.length === 0 ? "none" : active.join(", ");
+
+  note.textContent =
+    `Color indicates host-star spectral class (F/G/K/M; optionally Other). ` +
+    `Filtered out ${dropped} rows with missing Rp or Teq. ` +
+    `Other=${otherCount} (Show Other: ${showOther ? "ON" : "OFF"}). ` +
+    `Selected=${filterText}. Showing ${shown}/${valid} planets.`;
 }
 
 // Apply current filter to scatter plot data
@@ -38,12 +64,15 @@ function Filter() {
     scatter_plot.setData(base.filter(d => active.includes(d.spec_class)));
   }
   scatter_plot.update();
+
+  updateDataNote();
 }
 
 // ---------- Load static data ----------
 d3.csv("data/exoplanets_static.csv")
   .then(data => {
-    // Convert + add spec_class (IMPORTANT)
+    raw_rows = data.length;
+
     data.forEach(d => {
       d.pl_name = d.pl_name;
       d.pl_rade = +d.pl_rade;
@@ -53,10 +82,9 @@ d3.csv("data/exoplanets_static.csv")
       d.spec_class = toSpecClass(d.st_spectype);
     });
 
-    // remove rows that would break scatter plot
+    // exclude missing values
     input_data = data.filter(d => Number.isFinite(d.pl_rade) && Number.isFinite(d.pl_eqt));
 
-    // init views
     scatter_plot = new ScatterPlot(
       {
         parent: "#drawing_region_scatterplot",
@@ -79,11 +107,12 @@ d3.csv("data/exoplanets_static.csv")
 
     scatter_plot.update();
     bar_chart.update();
-    Filter();
+    Filter(); // includes note update
 
     // ---------- UI events ----------
     document.getElementById("reverse")?.addEventListener("click", () => {
       bar_chart?.reverseOrder();
+      updateDataNote(); // optional
     });
 
     document.getElementById("show-other")?.addEventListener("change", () => {
@@ -95,7 +124,7 @@ d3.csv("data/exoplanets_static.csv")
   })
   .catch(err => console.error(err));
 
-// ---------- Live fetch from TAP (simple + robust) ----------
+// ---------- Live fetch from TAP ----------
 async function fetchLatestFromTAP() {
   try {
     const adql = `
@@ -114,13 +143,9 @@ async function fetchLatestFromTAP() {
     if (!res.ok) throw new Error(`TAP fetch failed: ${res.status}`);
 
     const json = await res.json();
-
-    // some TAP services return {data:[...]} ; try both
     const rows = Array.isArray(json.data) ? json.data : (Array.isArray(json) ? json : []);
-    if (!Array.isArray(rows) || rows.length === 0) {
-      console.warn("No rows from TAP or unexpected JSON format.");
-      return;
-    }
+
+    raw_rows = rows.length;
 
     const live = rows
       .map(d => ({
@@ -133,16 +158,15 @@ async function fetchLatestFromTAP() {
       }))
       .filter(d => Number.isFinite(d.pl_rade) && Number.isFinite(d.pl_eqt));
 
-    // replace dataset with live
     input_data = live;
 
     scatter_plot?.setData(input_data);
     bar_chart?.setData(input_data);
 
     bar_chart?.update();
-    Filter();
+    Filter(); // updates scatter + note
   } catch (e) {
     console.error(e);
-    // graceful fallback: keep static data
+    // keep static data
   }
 }

@@ -31,6 +31,10 @@ class BarChart {
     vis.xScale = d3.scaleBand().range([0, vis.innerWidth]).padding(0.2);
     vis.yScale = d3.scaleLinear().range([vis.innerHeight, 0]);
 
+    vis.colorScale = d3.scaleOrdinal()
+      .domain(["F", "G", "K", "M", "Other"])
+      .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#7f7f7f"]);
+
     vis.xAxisG = vis.g.append("g")
       .attr("transform", `translate(0,${vis.innerHeight})`);
     vis.yAxisG = vis.g.append("g");
@@ -39,14 +43,14 @@ class BarChart {
       .attr("x", vis.innerWidth / 2)
       .attr("y", vis.innerHeight + 45)
       .attr("text-anchor", "middle")
-      .text("Spectral Class");
+      .text("Spectral Class (F/G/K/M/Other)");
 
     vis.g.append("text")
       .attr("transform", "rotate(-90)")
       .attr("x", -vis.innerHeight / 2)
       .attr("y", -45)
       .attr("text-anchor", "middle")
-      .text("Count");
+      .text("Number of Planets (count)");
   }
 
   reverseOrder() {
@@ -101,7 +105,7 @@ class BarChart {
       .attr("width", vis.xScale.bandwidth())
       .attr("y", vis.yScale(0))
       .attr("height", 0)
-      .attr("fill", "#888")
+      .attr("fill", d => vis.colorScale(d.key))
       .style("cursor", "pointer");
 
     // click toggles filter -> calls global Filter()
@@ -122,7 +126,8 @@ class BarChart {
       .attr("x", d => vis.xScale(d.key))
       .attr("width", vis.xScale.bandwidth())
       .attr("y", d => vis.yScale(d.value))
-      .attr("height", d => vis.innerHeight - vis.yScale(d.value));
+      .attr("height", d => vis.innerHeight - vis.yScale(d.value))
+      .attr("fill", d => vis.colorScale(d.key));
 
     vis.updateActiveStyle();
   }
