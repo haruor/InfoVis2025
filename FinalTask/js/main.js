@@ -134,10 +134,12 @@ async function fetchLatestFromTAP() {
       WHERE pl_rade IS NOT NULL AND pl_eqt IS NOT NULL
     `.trim();
 
+    const workerBase = "https://exo-tap-proxy.zyhyngyht-10-34a.workers.dev";
+
     const url =
-      "https://exoplanetarchive.ipac.caltech.edu/TAP/sync" +
-      "?query=" + encodeURIComponent(adql) +
-      "&format=json";
+        workerBase +
+        "/?query=" + encodeURIComponent(adql) +
+        "&format=json";
 
     const res = await fetch(url);
     if (!res.ok) throw new Error(`TAP fetch failed: ${res.status}`);
